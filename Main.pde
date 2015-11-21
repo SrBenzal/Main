@@ -1,72 +1,96 @@
-import SimpleOpenNI.*;
-SimpleOpenNI  kinect;
-
-void setup()
-{
-  size(1024, 768);
-  kinect = new SimpleOpenNI(this);
-  kinect.enableDepth();  
-}
-
-void draw()
-{
-/*  kinect.update();
-
-  PImage depthImage = kinect.depthImage();
-  image(depthImage, 0, 0);*/
+  import SimpleOpenNI.*;
+  SimpleOpenNI  kinect;
   
-  // declare these within the draw loop
-  // so they change every time
-  int closestValue = 8000;
-  int currentX = 0;
-  int currentY = 0;
+  float vectorBooms[] = new float[12];
+  float range = 500;
+  float realX;
+  
+  int nBooms = 1;
+  
+  //Sonido
+  
+  import ddf.minim.*;
+  
+  Minim minim;
+  AudioPlayer bomb;
+  
+  void setup()
+  {
+    size(640, 480);
+    kinect = new SimpleOpenNI(this);
+    kinect.enableDepth();  
+    
+    //Sonido
+    
+    minim = new Minim(this);
+    bomb = minim.loadFile("Dob_Crying.mp3");
+  }
+  
+  void draw()
+  {
+    int closestValue = 8000;
+    int currentX = 0;
+    float realAngle;
 
-  kinect.update();
-
-  // get the depth array from the kinect
-  int[] depthValues = kinect.depthMap();
-
-  // for each row in the depth image
-  for (int y = 0; y < 480; y++) {
-    // look at each pixel in the row
-    for (int x = 0; x < 640; x++) {
-      // pull out the corresponding value from the depth array
-      int i = x + y * 640;
-      int currentDepthValue = depthValues[i];
-
-      // if that pixel is the closest one we've seen so far
-      if (currentDepthValue > 0 && currentDepthValue < closestValue) {
-        // save its value
-        closestValue = currentDepthValue;
-        // and save its position (both X and Y coordinates)
-        currentX = x;
-        currentY = y;
+    int maxZ=5000;
+  
+    kinect.update();
+  
+    int[] depthValues = kinect.depthMap();
+  
+      for (int x = 0; x < 640; x++) {
+        int i = x + 240 * 640;
+        int currentDepthValue = depthValues[i];
+  
+        if (currentDepthValue > 0 && currentDepthValue < closestValue) {
+          closestValue = currentDepthValue;
+          currentX = x;
+        }
+    }
+    
+    realAngle = radians(57) / 640 * (currentX - 320);
+    realX =tan(realAngle)*closestValue;
+  
+    image(kinect.depthImage(), 0, 0);
+  
+    fill(255, 0, 0);
+    ellipse(currentX, 240, 25, 25);
+   // println("CURRENTX: " + currentX, "REAL X: " + realX, "Z: "+closestValue);
+    
+    if(closestValue >= maxZ){
+    
+       bomb.play();
+       bomb.rewind();
+    }
+  }
+  
+  void createVectorBooms()
+  {
+    for (int aux=0; aux < nBooms * 2; aux+=2)
+    {
+      vectorBooms[aux]=random((float)-2000.0,(float)2000.0);
+      vectorBooms[aux+1]=random(1000, 5000);
+    
+      println("BOOM X: " +  vectorBooms[aux], "BOOM Z: " + vectorBooms[aux+1]);
+      
+    }
+  }
+  
+  boolean checkBoom()
+  {
+    for (int aux=0;aux< nBooms * 2;aux+=2)
+    {
+      
+      float dx = realX - vectorBooms[aux];
+      float dz = realZ - vectorBooms[aux+1];
+        
+      float distance=sqrt(dx*dx+dz*dz);
+  
+      if (distance < range)
+      {
+        //BOOM
       }
     }
   }
-
-  // closestX and closestY become
-  // a running average with currentX and currentY
-  closestX = (closestX + currentX) / 2;
-  closestY = (closestY + currentY) / 2;
-
-  //draw the depth image on the screen
-  image(kinect.depthImage(), 0, 0);
-
-  // draw a red circle over it, 
-  // positioned at the X and Y coordinates 
-  // we saved of the closest pixel.
-  fill(255, 0, 0);
-  ellipse(closestX, closestY, 25, 25);
-}
-
-void mousePressed(){
-  int[] depthValues = kinect.depthMap();
-  int clickPosition = mouseX + (mouseY * 640);
-  int clickedDepth = depthValues[clickPosition];
   
-  float inches = clickedDepth / 25.4;
-  
-  println("inches: " + inches);
-}
 
