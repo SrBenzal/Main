@@ -16,8 +16,8 @@ class StageViewer
   float drawedStageWidth;
   float drawedStagePos;
   
-  float previousPlayerPosX;
-  float previousPlayerPosY;
+  float previousPlayerX;
+  float previousPlayerY;
   
   StageViewer(Bombs bms, int stageWidth, int stageDepth, int screenWidth, int screenHeight, boolean usingTwoScreens)
   {
@@ -57,9 +57,8 @@ class StageViewer
    // float maxZ = 
     
    triangle(realToScreenX(0f), realToScreenY(0f), realToScreenX(-(float)tan(radians(57)/2) * stageZ), realToScreenY((float)stageZ) , realToScreenX((float)tan(radians(57)/2) * stageZ), (float)realToScreenY(stageZ));
-   
-   image(perro,realToScreenX(0f)-perro.width/2, (realToScreenY(0f)-perro.height/2)- 20);
-   perro.resize(100,75);
+    
+
     
     for (int i=0; i < bombs.nBombs*2; i+=2)
     {
@@ -94,24 +93,33 @@ class StageViewer
     
      fill(0, 255, 0);
      
-     float playerPosX = drawedStagePos + ( realX + 2000) / stageX * drawedStageWidth;
-     float playerPosY = screenY - ( (float)closestValue / stageZ) * screenY;
+     float playerX = drawedStagePos + ( realX + 2000) / stageX * drawedStageWidth;
+     float playerY = screenY - ( (float)closestValue / stageZ) * screenY;
      
-     playerPosX = lerp(playerPosX, previousPlayerPosX, 0.25);
-     playerPosY = lerp(playerPosY, previousPlayerPosY, 0.25);
+     //playerX = lerp(playerX, previousPlayerX, 0.25);
+     //playerY = lerp(playerY, previousPlayerY, 0.25);
      
-     ellipse(playerPosX, playerPosY, 200 *scale, 200*scale);
      
-     previousPlayerPosX = playerPosX;
-     previousPlayerPosY = playerPosY;
-     
-    
+      
+      previousPlayerX += velFriction(previousPlayerX, playerX, 20);
+      previousPlayerY += velFriction(previousPlayerY, playerY, 20);
+
+  
+     ellipse(previousPlayerX, previousPlayerY, 200 *scale, 200*scale);
      fill(0); //Timer Color
+     
+     previousPlayerX = playerX;
+     previousPlayerY = playerY;
+  }
+  
+  float velFriction(float origin, float dest, float coeff) 
+  {
+    return (dest-origin)/coeff;
   }
   
   float realToScreenX(float value)
   {
-      return drawedStagePos + ( value + 2000) / stageX * drawedStageWidth;
+      return drawedStagePos + ( value + stageX/2) / stageX * drawedStageWidth;
   }
   
   float realToScreenY(float value)
