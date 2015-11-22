@@ -13,6 +13,9 @@ class StageViewer
   
   boolean twoScreens;
   
+  float drawedStageWidth;
+  float drawedStagePos;
+  
   StageViewer(Bombs bms, int stageWidth, int stageDepth, int screenWidth, int screenHeight, boolean usingTwoScreens)
   {
      bombs = bms;
@@ -29,9 +32,7 @@ class StageViewer
   
   void atDraw(float realX, int closestValue)
   {
-    float drawedStageWidth =  (float)stageX/stageZ*480;
-    
-    float drawedStagePos;
+    drawedStageWidth =  (float)stageX/stageZ*480;
    
    if(twoScreens) 
    {
@@ -46,14 +47,18 @@ class StageViewer
     float scale = drawedStageWidth/stageX; 
     
     fill(255, 255, 255);
-    rect(drawedStagePos , 0,  drawedStageWidth, screenY);
+    //rect(drawedStagePos , 0,  drawedStageWidth, screenY);
+    
+   // float maxZ = 
+    
+   triangle(realToScreenX(0f), realToScreenY(0f), realToScreenX(-(float)tan(radians(57)/2) * stageZ), realToScreenY((float)stageZ) , realToScreenX((float)tan(radians(57)/2) * stageZ), (float)realToScreenY(stageZ));
     
 
     
     for (int i=0; i < bombs.nBombs*2; i+=2)
     {
-      float bx = drawedStagePos + ( bombs.bombVector[i] + 2000) / stageX * drawedStageWidth;
-      float bz = screenY - ( bombs.bombVector[i+1] / stageZ) * screenY;
+      float bx = realToScreenX( bombs.bombVector[i]);
+      float bz = realToScreenY(bombs.bombVector[i+1]);
       
       fill(255, 255, 0);
       ellipse(bx, bz, bombs.alRange*2 *scale,bombs.alRange*2*scale);
@@ -66,4 +71,16 @@ class StageViewer
      ellipse(drawedStagePos + ( realX + 2000) / stageX * drawedStageWidth, screenY - ( (float)closestValue / stageZ) * screenY, 200 *scale, 200*scale);
     
   }
+  
+  float realToScreenX(float value)
+  {
+      return drawedStagePos + ( value + stageX/2) / stageX * drawedStageWidth;
+  }
+  
+  float realToScreenY(float value)
+  {
+      return screenY - ( value / stageZ) * screenY;
+  }
+  
+  
 }

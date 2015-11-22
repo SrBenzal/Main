@@ -16,7 +16,7 @@
   
   //Sonido
   Minim minim;
-  AudioPlayer bomb;
+  AudioPlayer DogCriyng;
   
   //Bombs
   Bombs bombs;
@@ -24,18 +24,24 @@
   //Stage viewer
   StageViewer stageViewer;
   
+  //Limites
+  
+  int maxZ = 4000;
+  int minX = 1000;
+  float maxX; 
+  
   
   void setup()
   {
     size(screenWidth, screenHeight);
     
     //Kinect
-  //  kinect = new SimpleOpenNI(this);
-   // kinect.enableDepth();  
+     kinect = new SimpleOpenNI(this);
+     kinect.enableDepth();  
     
     //Sonido
     minim = new Minim(this);
-    bomb = minim.loadFile("Dob_Crying.mp3");
+    DogCrying = minim.loadFile("Dob_Crying.mp3");
     
     //Bombs
     bombs = new Bombs(5, 200, 500);
@@ -52,11 +58,11 @@
 
     int maxZ = 5000;
   
-    //kinect.update();
+    kinect.update();
   
-   // int[] depthValues = kinect.depthMap();
+     int[] depthValues = kinect.depthMap();
   
-      /*for (int x = 0; x < 640; x++) {
+      for (int x = 0; x < 640; x++) {
         int i = x + 240 * 640;
         int currentDepthValue = depthValues[i];
   
@@ -64,21 +70,31 @@
           closestValue = currentDepthValue;
           currentX = x;
         }
-    }*/
+    }
     
     realAngle = radians(57) / 640 * (currentX - 320);
     realX =tan(realAngle)*closestValue;
   
-    //image(kinect.depthImage(), 0, 0);
+    image(kinect.depthImage(), 0, 0);
   
     fill(255, 0, 0);
     ellipse(currentX, 240, 25, 25);
    // println("CURRENTX: " + currentX, "REAL X: " + realX, "Z: "+closestValue);
     
-    if(closestValue >= maxZ)
+    //Limites pantalla
+    
+    maxX = tan(radians(57/2)) * closestValue - 200;
+    
+    if(closestValue >= maxZ || closestValue <= minZ || realX > maxX || realX < - maxX)
     {
-       bomb.play();
-       bomb.rewind();
+      
+      if(!DogCrying.isPlaying()){
+        
+        DogCrying.play();
+        DogCrying.rewind();
+      
+      }
+       
     }
     
     
@@ -87,16 +103,16 @@
 
     if(bombs.checkBombsAlarm(realX, closestValue))
     {
-       println("WARNING!");
+       //println("WARNING!");
        
        if(bombs.checkBombsExplosion(realX, closestValue))
       {
-         println("BOOOM");
+        // println("BOOOM");
       }
     }
     else
     {
-      println("NO PROBLEM");
+      //println("NO PROBLEM");
     }
   }
   

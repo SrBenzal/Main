@@ -23,10 +23,20 @@ class Bombs
   {
     bombVector = new float[nBombs*2];
     
+    float z;
+    float x;
+    
+    float maxX;
+    
     for (int i=0; i < nBombs*2; i+=2)
     {
-        bombVector[i] = random(-2000f,2000f);
-        bombVector[i+1] = random(1000f, 5000f);
+        z = random(1000f, 5000f);
+        
+        maxX = (float)tan(radians(57)/2) * z;
+        
+        bombVector[i] = random(-maxX,maxX);
+        bombVector[i+1] = z;
+
     }
   }
   
