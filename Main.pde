@@ -52,6 +52,7 @@
   void setup()
   {
     size(screenWidth, screenHeight);
+   // size(displayWidth, displayHeight);
     
     //Kinect
     kinect = new SimpleOpenNI(this);
@@ -76,7 +77,7 @@
     inicio = loadImage("inicio.jpg");
     
     //Bombs
-    bombs = new Bombs(5, 200, 500, minZ, maxZ);
+    bombs = new Bombs(4, 200, 400, minZ, maxZ);
     
     //StageViewer
     stageViewer = new StageViewer(bombs, stageWidth, stageDepth, screenWidth, screenHeight, false);
@@ -211,7 +212,7 @@
   
     case 3:
           
-          if (!Dogs_Victory.isPlaying()) Dogs_Victory.play();
+          if (!Dogs_Victory.isPlaying() && win) Dogs_Victory.play();
     
           if (win){
                 image(found,0,0);
@@ -244,3 +245,8 @@ void mousePressed(){
   
 } 
 
+/*
+boolean sketchFullScreen(){
+return true;
+}
+*/

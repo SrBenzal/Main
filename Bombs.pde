@@ -34,7 +34,7 @@ class Bombs
     
     while(i < nBombs * 2)
     {
-       z = random((float)_minZ + 500, (float)_maxZ);
+       z = random((float)_minZ + 500, (float)_maxZ - 200);
         //z = random(1000, 5000);
         
         maxX = (float)tan(radians(57)/2) * z;
