@@ -1,3 +1,6 @@
+//FALTA HACER QUE NO SEA UN RECTANGULO, SI NO UN TRIANGULO
+
+
 class Bombs
 {
   int nBombs;
@@ -22,16 +25,16 @@ class Bombs
     
     for (int i=0; i < nBombs*2; i+=2)
     {
-       bombVector[i] = random(-2000f,2000f);
-       bombVector[i+1] = random(1000f, 5000f);
+        bombVector[i] = random(-2000f,2000f);
+        bombVector[i+1] = random(1000f, 5000f);
     }
   }
   
-  boolean checkBombs(float realX, float closestValue)
+  boolean checkBombsExplosion(float realX, float closestValue)
   {
      for (int i=0; i< nBombs * 2; i+=2)
      {
-        float dx = realX - bombVector[i];
+        float dx = (float) realX - bombVector[i];
         float dz = (float) closestValue - bombVector[i+1];
           
         float distance=sqrt(dx*dx+dz*dz);
@@ -46,4 +49,25 @@ class Bombs
      return false;
   }
   
+  boolean checkBombsAlarm(float realX, float closestValue)
+  {
+     for (int i=0; i< nBombs * 2; i+=2)
+     {
+        float dx = (float) realX - bombVector[i];
+        float dz = (float) closestValue - bombVector[i+1];
+          
+        float distance=sqrt(dx*dx+dz*dz);
+    
+        boolean result;
+        
+        if(distance < alRange)
+        {
+          return true;
+        }
+     }
+     return false;
+  }  
 }
+
+ 
+  

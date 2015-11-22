@@ -81,12 +81,22 @@
        bomb.rewind();
     }
     
-    stageViewer.atDraw(realX, closestValue);
-
     
-    if(bombs.checkBombs(realX, closestValue))
+    stageViewer.atDraw(realX, closestValue);
+    
+
+    if(bombs.checkBombsAlarm(realX, closestValue))
     {
-       println("BOOOM");
+       println("WARNING!");
+       
+       if(bombs.checkBombsExplosion(realX, closestValue))
+      {
+         println("BOOOM");
+      }
+    }
+    else
+    {
+      println("NO PROBLEM");
     }
   }
   

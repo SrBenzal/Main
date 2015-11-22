@@ -66,7 +66,4 @@ class StageViewer
      ellipse(drawedStagePos + ( realX + 2000) / stageX * drawedStageWidth, screenY - ( (float)closestValue / stageZ) * screenY, 200 *scale, 200*scale);
     
   }
-  
-  
-  
 }
