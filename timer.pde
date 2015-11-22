@@ -41,7 +41,7 @@ class Timer
         tiempoActual = tiempoAnterior;
       
       textSize(32);
-      text(tiempoActual, screenWidth - 100, screenHeight - 28);
+      text(tiempoActual + "secs", screenWidth - 140, screenHeight - 28);
       
       
       //print(secs - startSeconds + "\n");

@@ -9,7 +9,7 @@ class Bombs
   int _minZ;
   int _maxZ;
 
-  Bombs(int numberOfBombs, int explosionRange, int alarmRange)
+  Bombs(int numberOfBombs, int explosionRange, int alarmRange, int minZ, int maxZ)
   {
       nBombs = numberOfBombs;
       exRange = explosionRange;
@@ -34,8 +34,8 @@ class Bombs
     
     while(i < nBombs * 2)
     {
-       // z = random((float)_minZ + 500, (float)_maxZ);
-        z = random(1000, 5000);
+       z = random((float)_minZ + 500, (float)_maxZ);
+        //z = random(1000, 5000);
         
         maxX = (float)tan(radians(57)/2) * z;
         
@@ -67,6 +67,11 @@ class Bombs
             i+= 2;
         }
     }
+  }
+  
+  void deleteVectorBombs()
+  {
+     bombVector = null;
   }
   
   boolean checkBombsExplosion(float realX, float closestValue)

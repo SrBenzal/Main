@@ -4,10 +4,10 @@
     
   //Stage & Screen
   int stageWidth = 4000;
-  int stageDepth = 5000;
+  int stageDepth = 4000;
    
-  int screenWidth = 1280;
-  int screenHeight = 480;
+  int screenWidth = 800;
+  int screenHeight = 600;
   
   //Position
   float realX;
@@ -19,6 +19,7 @@
   AudioPlayer DogBarking;
   AudioPlayer Beep;
   AudioPlayer Victory;
+  AudioPlayer Dogs_Victory;
   AudioPlayer explosion;
   
   //Imagenes
@@ -37,7 +38,7 @@
   StageViewer stageViewer;
   
   //Limites
-  int maxZ = stageWidth;
+  int maxZ = stageDepth;
   int minZ = 1000;
   float maxX; 
   
@@ -62,6 +63,7 @@
     DogBarking = minim.loadFile("Dog_Barking.mp3");
     Beep = minim.loadFile("Beep.mp3");
     Victory = minim.loadFile("Victory.mp3");
+    Dogs_Victory = minim.loadFile("Dogs_Victory.mp3");
     explosion = minim.loadFile("explosion.mp3");
     
     //Imagenes
@@ -74,10 +76,10 @@
     inicio = loadImage("inicio.jpg");
     
     //Bombs
-    bombs = new Bombs(5, 200, 500);
+    bombs = new Bombs(5, 200, 500, minZ, maxZ);
     
     //StageViewer
-    stageViewer = new StageViewer(bombs, stageWidth, stageDepth, screenWidth, screenHeight, true);
+    stageViewer = new StageViewer(bombs, stageWidth, stageDepth, screenWidth, screenHeight, false);
     
     //Timer
     timer = new Timer(120);
@@ -90,18 +92,18 @@
     switch(screen){
   
         case 0:
-            image(intro,screenWidth/2,0);
-            intro.resize(screenWidth/2,screenHeight);
+            image(intro,0,0);
+            intro.resize(screenWidth,screenHeight);
             break;
             
         case 1:
-            image(inicio,screenWidth/2,0);
-            inicio.resize(screenWidth/2,screenHeight);
+            image(inicio,0,0);
+            inicio.resize(screenWidth,screenHeight);
             break;
       
         case 2://Dibujar Imagenes en Pantalla
-            image(fondo_tiempo,screenWidth/2,0);
-            fondo_tiempo.resize(screenWidth/2,screenHeight);
+            image(fondo_tiempo,0,0);
+            fondo_tiempo.resize(screenWidth,screenHeight);
             closestValue = 8000;
             int currentX = 0;
             float realAngle;
@@ -125,10 +127,10 @@
             realAngle = radians(57) / 640 * (currentX - 320);
             realX =tan(realAngle)*closestValue;
           
-            image(kinect.depthImage(), 0, 0);
+            //image(kinect.depthImage(), 0, 0);
           
-            fill(255, 0, 0);
-            ellipse(currentX, 240, 25, 25);
+            //fill(255, 0, 0);
+            //ellipse(currentX, 240, 25, 25);
            // println("CURRENTX: " + currentX, "REAL X: " + realX, "Z: "+closestValue);
             
             //Limites pantalla
@@ -138,7 +140,7 @@
             if(closestValue >= maxZ || realX > maxX || realX < - maxX && closestValue > minZ)
             {
               
-              if(!DogCrying.isPlaying()){
+              if(!DogCrying.isPlaying() && screen == 2){
                 
                   DogCrying.play();
                   DogCrying.rewind();
@@ -147,7 +149,7 @@
                
             }
             else{
-              if(!DogBarking.isPlaying()){
+              if(!DogBarking.isPlaying() && screen == 2){
                 
                 DogBarking.play();
                 DogBarking.rewind();
@@ -158,13 +160,13 @@
             if(closestValue <= minZ)
             {
               
-              if(!Victory.isPlaying()){
-                
+              {
+                  if(!Victory.isPlaying()){
                   Victory.play();
                   win = true;
-                  screen = 3;
-              
-              }
+                  screen = 3;   
+                  }
+                }
             }
             
             
@@ -208,14 +210,17 @@
           break;
   
     case 3:
+          
+          if (!Dogs_Victory.isPlaying()) Dogs_Victory.play();
+    
           if (win){
-                image(found,screenWidth/2,0);
-                found.resize(screenWidth/2,screenHeight);
+                image(found,0,0);
+                found.resize(screenWidth,screenHeight);
                 break;
           }
           else{
-                image(dead,screenWidth/2,0);
-                dead.resize(screenWidth/2,screenHeight);
+                image(dead,0,0);
+                dead.resize(screenWidth,screenHeight);
                 break;
           }
           
@@ -230,7 +235,12 @@ void mousePressed(){
  
  screen += 1;
  if (screen > 3) screen = 1;
- if (screen == 2) timer.start();
+ if (screen == 2)
+{
+  Victory.rewind();
+  explosion.rewind();
+  timer.start();
+}
   
 } 
 

@@ -16,6 +16,9 @@ class StageViewer
   float drawedStageWidth;
   float drawedStagePos;
   
+  float previousPlayerPosX;
+  float previousPlayerPosY;
+  
   StageViewer(Bombs bms, int stageWidth, int stageDepth, int screenWidth, int screenHeight, boolean usingTwoScreens)
   {
      bombs = bms;
@@ -90,14 +93,25 @@ class StageViewer
       strokeWeight(2);
     
      fill(0, 255, 0);
-     ellipse(drawedStagePos + ( realX + 2000) / stageX * drawedStageWidth, screenY - ( (float)closestValue / stageZ) * screenY, 200 *scale, 200*scale);
+     
+     float playerPosX = drawedStagePos + ( realX + 2000) / stageX * drawedStageWidth;
+     float playerPosY = screenY - ( (float)closestValue / stageZ) * screenY;
+     
+     playerPosX = lerp(playerPosX, previousPlayerPosX, 0.25);
+     playerPosY = lerp(playerPosY, previousPlayerPosY, 0.25);
+     
+     ellipse(playerPosX, playerPosY, 200 *scale, 200*scale);
+     
+     previousPlayerPosX = playerPosX;
+     previousPlayerPosY = playerPosY;
+     
     
      fill(0); //Timer Color
   }
   
   float realToScreenX(float value)
   {
-      return drawedStagePos + ( value + stageX/2) / stageX * drawedStageWidth;
+      return drawedStagePos + ( value + 2000) / stageX * drawedStageWidth;
   }
   
   float realToScreenY(float value)
