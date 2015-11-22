@@ -44,6 +44,8 @@
   //Pantallas
   int screen = 0;
   
+  boolean win;
+  
   Timer timer;
   
   void setup()
@@ -79,119 +81,156 @@
     
     //Timer
     timer = new Timer(120);
-    timer.start();
   }
   
   void draw()
   {
     background(255);
     
-    //Dibujar Imagenes en Pantalla
-    image(fondo_tiempo,screenWidth/2,0);
-    fondo_tiempo.resize(screenWidth/2,screenHeight);
-    closestValue = 8000;
-    int currentX = 0;
-    float realAngle;
-
-    int maxZ = 5000;
+    switch(screen){
   
-    kinect.update();
-  
-     int[] depthValues = kinect.depthMap();
-  
-      for (int x = 0; x < 640; x++) {
-        int i = x + 240 * 640;
-        int currentDepthValue = depthValues[i];
-  
-        if (currentDepthValue > 0 && currentDepthValue < closestValue) {
-          closestValue = currentDepthValue;
-          currentX = x;
-        }
-    }
-    
-    realAngle = radians(57) / 640 * (currentX - 320);
-    realX =tan(realAngle)*closestValue;
-  
-    image(kinect.depthImage(), 0, 0);
-  
-    fill(255, 0, 0);
-    ellipse(currentX, 240, 25, 25);
-   // println("CURRENTX: " + currentX, "REAL X: " + realX, "Z: "+closestValue);
-    
-    //Limites pantalla
-    
-    maxX = tan(radians(57/2)) * closestValue - 200;
-    
-    if(closestValue >= maxZ || realX > maxX || realX < - maxX && closestValue > minZ)
-    {
+        case 0:
+            image(intro,screenWidth/2,0);
+            intro.resize(screenWidth/2,screenHeight);
+            break;
+            
+        case 1:
+            image(inicio,screenWidth/2,0);
+            inicio.resize(screenWidth/2,screenHeight);
+            break;
       
-      if(!DogCrying.isPlaying()){
+        case 2://Dibujar Imagenes en Pantalla
+            image(fondo_tiempo,screenWidth/2,0);
+            fondo_tiempo.resize(screenWidth/2,screenHeight);
+            closestValue = 8000;
+            int currentX = 0;
+            float realAngle;
         
-        DogCrying.play();
-        DogCrying.rewind();
-      
-      }
-       
-    }
-    if(closestValue <= minZ)
-    {
-      
-      if(!Victory.isPlaying()){
+            int maxZ = 5000;
+          
+            kinect.update();
+          
+             int[] depthValues = kinect.depthMap();
+          
+              for (int x = 0; x < 640; x++) {
+                int i = x + 240 * 640;
+                int currentDepthValue = depthValues[i];
+          
+                if (currentDepthValue > 0 && currentDepthValue < closestValue) {
+                  closestValue = currentDepthValue;
+                  currentX = x;
+                }
+            }
+            
+            realAngle = radians(57) / 640 * (currentX - 320);
+            realX =tan(realAngle)*closestValue;
+          
+            image(kinect.depthImage(), 0, 0);
+          
+            fill(255, 0, 0);
+            ellipse(currentX, 240, 25, 25);
+           // println("CURRENTX: " + currentX, "REAL X: " + realX, "Z: "+closestValue);
+            
+            //Limites pantalla
+            
+            maxX = tan(radians(57/2)) * closestValue - 200;
+            
+            if(closestValue >= maxZ || realX > maxX || realX < - maxX && closestValue > minZ)
+            {
+              
+              if(!DogCrying.isPlaying()){
+                
+                  DogCrying.play();
+                  DogCrying.rewind();
+              
+              }
+               
+            }
+            else{
+              if(!DogBarking.isPlaying()){
+                
+                DogBarking.play();
+                DogBarking.rewind();
+              
+              }
+            }
+                
+            if(closestValue <= minZ)
+            {
+              
+              if(!Victory.isPlaying()){
+                
+                  Victory.play();
+                  win = true;
+                  screen = 3;
+              
+              }
+            }
+            
+            
+            stageViewer.atDraw(realX, closestValue);
+            
         
-        Victory.play();
-      
-      }
+            if(bombs.checkBombsAlarm(realX, closestValue))
+            {
+               //println("WARNING!");
+              
+              if(!Beep.isPlaying()){
+                
+                Beep.play();
+                Beep.rewind();
+              
+              }
+               
+               if(bombs.checkBombsExplosion(realX, closestValue))
+              {
+                // println("BOOOM");
+                if(!explosion.isPlaying()){
+                
+                    explosion.play();
+                    win = false;
+                    screen = 3;
+              
+                }
+              }
+            }
+            else
+            {
+              //println("NO PROBLEM");
+            }
+            
+           if( timer.isTimeOver())
+           {
+              explosion.play();
+              win = false;
+              screen = 3;
+           }
+          break;
+  
+    case 3:
+          if (win){
+                image(found,screenWidth/2,0);
+                found.resize(screenWidth/2,screenHeight);
+                break;
+          }
+          else{
+                image(dead,screenWidth/2,0);
+                dead.resize(screenWidth/2,screenHeight);
+                break;
+          }
+          
     }
     
+    println("Pantalla: " + screen);
     
-    stageViewer.atDraw(realX, closestValue);
-    
-
-    if(bombs.checkBombsAlarm(realX, closestValue))
-    {
-       //println("WARNING!");
-      
-      if(!Beep.isPlaying()){
-        
-        Beep.play();
-        Beep.rewind();
-      
-      }
-       
-       if(bombs.checkBombsExplosion(realX, closestValue))
-      {
-        // println("BOOOM");
-        if(!explosion.isPlaying()){
-        
-        explosion.play();
-      
-        }
-      }
-    }
-    else
-    {
-      //println("NO PROBLEM");
-    }
-    
-   if( timer.isTimeOver())
-   {
-     print("TIEMPO ACABADO");
-   }
   
 }
-
-
-
-void GameOver(boolean win){
   
-  //true- win  false- bomb
+void mousePressed(){
+ 
+ screen += 1;
+ if (screen > 3) screen = 1;
+ if (screen == 2) timer.start();
   
-  if(win){
-  
-    
-    }
-
-}
-  
-  
+} 
 

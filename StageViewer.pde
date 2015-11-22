@@ -54,8 +54,9 @@ class StageViewer
    // float maxZ = 
     
    triangle(realToScreenX(0f), realToScreenY(0f), realToScreenX(-(float)tan(radians(57)/2) * stageZ), realToScreenY((float)stageZ) , realToScreenX((float)tan(radians(57)/2) * stageZ), (float)realToScreenY(stageZ));
-    
-
+   
+   image(perro,realToScreenX(0f)-perro.width/2, (realToScreenY(0f)-perro.height/2)- 20);
+   perro.resize(100,75);
     
     for (int i=0; i < bombs.nBombs*2; i+=2)
     {

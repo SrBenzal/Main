@@ -6,12 +6,17 @@ class Bombs
   float exRange;
   float alRange;
   
+  int _minZ;
+  int _maxZ;
 
   Bombs(int numberOfBombs, int explosionRange, int alarmRange)
   {
       nBombs = numberOfBombs;
       exRange = explosionRange;
       alRange = alarmRange;
+      
+      _minZ = minZ;
+      _maxZ = maxZ;
       
       createBombVector();
   }
@@ -29,7 +34,8 @@ class Bombs
     
     while(i < nBombs * 2)
     {
-        z = random(1000f, 5000f);
+       // z = random((float)_minZ + 500, (float)_maxZ);
+        z = random(1000, 5000);
         
         maxX = (float)tan(radians(57)/2) * z;
         

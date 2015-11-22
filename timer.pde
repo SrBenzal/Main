@@ -30,7 +30,6 @@ class Timer
   {
     tiempoActual = maxSeconds - secs;
     
-    
     if(!stopped)
     {
       
