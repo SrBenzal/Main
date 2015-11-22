@@ -2,14 +2,13 @@
   SimpleOpenNI  kinect;
   import ddf.minim.*; //Sonido
     
-   //Stage & Screen
-   int stageWidth = 4000;
-   int stageDepth = 5000;
+  //Stage & Screen
+  int stageWidth = 4000;
+  int stageDepth = 5000;
    
-   int screenWidth = 1280;
-   int screenHeight = 480;
-   
-    
+  int screenWidth = 1280;
+  int screenHeight = 480;
+  
   //Position
   float realX;
   int closestValue;
@@ -22,6 +21,15 @@
   AudioPlayer Victory;
   AudioPlayer explosion;
   
+  //Imagenes
+  PImage fondo_tiempo;
+  PImage dead;
+  PImage found;
+  PImage mina;
+  PImage perro;
+  PImage intro;
+  PImage inicio;
+  
   //Bombs
   Bombs bombs;
   
@@ -33,6 +41,9 @@
   int minZ = 1000;
   float maxX; 
   
+  //Pantallas
+  int screen = 0;
+  
   Timer timer;
   
   void setup()
@@ -40,8 +51,8 @@
     size(screenWidth, screenHeight);
     
     //Kinect
-     kinect = new SimpleOpenNI(this);
-     kinect.enableDepth();  
+    kinect = new SimpleOpenNI(this);
+    kinect.enableDepth();  
     
     //Sonido
     minim = new Minim(this);
@@ -51,6 +62,15 @@
     Victory = minim.loadFile("Victory.mp3");
     explosion = minim.loadFile("explosion.mp3");
     
+    //Imagenes
+    fondo_tiempo = loadImage("fondo_tiempo.jpg");
+    dead = loadImage("dead.jpg");
+    found = loadImage("found.jpg");
+    mina = loadImage("mina.png");
+    perro = loadImage("perro.png");
+    intro = loadImage("intro.jpg");
+    inicio = loadImage("inicio.jpg");
+    
     //Bombs
     bombs = new Bombs(5, 200, 500);
     
@@ -58,12 +78,17 @@
     stageViewer = new StageViewer(bombs, stageWidth, stageDepth, screenWidth, screenHeight, true);
     
     //Timer
-    timer = new Timer(10);
+    timer = new Timer(120);
     timer.start();
   }
   
   void draw()
   {
+    background(255);
+    
+    //Dibujar Imagenes en Pantalla
+    image(fondo_tiempo,screenWidth/2,0);
+    fondo_tiempo.resize(screenWidth/2,screenHeight);
     closestValue = 8000;
     int currentX = 0;
     float realAngle;
@@ -116,7 +141,6 @@
         Victory.play();
       
       }
-       
     }
     
     
@@ -155,6 +179,8 @@
    }
   
 }
+
+
 
 void GameOver(boolean win){
   

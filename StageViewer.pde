@@ -46,7 +46,9 @@ class StageViewer
     
     float scale = drawedStageWidth/stageX; 
     
-    fill(255, 255, 255);
+    stroke(208, 0, 0);
+    strokeWeight(3);
+    fill(70, 36, 0, 100);
     //rect(drawedStagePos , 0,  drawedStageWidth, screenY);
     
    // float maxZ = 
@@ -60,16 +62,36 @@ class StageViewer
       float bx = realToScreenX( bombs.bombVector[i]);
       float bz = realToScreenY(bombs.bombVector[i+1]);
       
-      fill(255, 255, 0);
+      strokeWeight(0);
+      
+      fill(255, 255, 0, 150);
       ellipse(bx, bz, bombs.alRange*2 *scale,bombs.alRange*2*scale);
       
+      
+      image(mina,bx-mina.width/2,bz-mina.height/2);
+      
+      int size = int(bombs.exRange*2 *scale);
+      
+      //mina.scale(size / mina.width, size / mina.width);
+      
+      mina.resize(size, size);
+      
+      /*
       fill(255, 0, 0);
       ellipse(bx, bz, bombs.exRange*2 *scale,bombs.exRange*2*scale);
+      */
+      
+      
+      
     }
+    
+      stroke(0, 208, 0);
+      strokeWeight(2);
     
      fill(0, 255, 0);
      ellipse(drawedStagePos + ( realX + 2000) / stageX * drawedStageWidth, screenY - ( (float)closestValue / stageZ) * screenY, 200 *scale, 200*scale);
     
+     fill(0); //Timer Color
   }
   
   float realToScreenX(float value)

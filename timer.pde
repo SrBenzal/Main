@@ -1,8 +1,10 @@
 class Timer
 {
-  int startSeconds;
+  int startFrame;
   int secs;
   int maxSeconds;
+  int tiempoActual;
+  int tiempoAnterior;
   
 
   boolean stopped = true;
@@ -14,7 +16,8 @@ class Timer
   
   void start()
   {
-     startSeconds = second();
+     tiempoAnterior = maxSeconds;
+     startFrame = frameCount;
      stopped = false;
   }
   
@@ -25,16 +28,31 @@ class Timer
   
   boolean isTimeOver()
   {
+    tiempoActual = maxSeconds - secs;
+    
+    
     if(!stopped)
     {
-      secs = second();
       
-      print(secs - startSeconds + "\n");
-      if(secs - startSeconds > maxSeconds)
+      secs = (int) ((frameCount - startFrame) / frameRate);
+      
+      tiempoActual = maxSeconds - secs;
+      
+      if (tiempoAnterior < tiempoActual)
+        tiempoActual = tiempoAnterior;
+      
+      textSize(32);
+      text(tiempoActual, screenWidth - 100, screenHeight - 28);
+      
+      
+      //print(secs - startSeconds + "\n");
+      if(secs > maxSeconds)
       {
         stopped = true;
         return true;
       }
+      tiempoAnterior = tiempoActual;
+      
     }
     return false;
   }
