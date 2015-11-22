@@ -1,17 +1,39 @@
-//void setup(){
-//  size(640,480);
-//}
-
-//boolean encontrado = false;
-
-//void atDraw(){
- // int timer = second();
- // println(timer);
-//}
+class Timer
+{
+  int startSeconds;
+  int secs;
+  int maxSeconds;
   
-  //while ((timer <= 20) || (encontrado == false)){
-    //println("Tienes tiempo");
-  //}
-  //println("Has perdido");
-//}
+  
+  Timer(int maxTime)
+  {
+      maxSeconds = maxTime;
+  }
+  
+  void start()
+  {
+     startSeconds = seconds();
+     stopped = false;
+  }
+  
+  void stop()
+  {
+    stopped = true;
+  }
+  
+  bool isTimeOver()
+  {
+    if(!stopped)
+    {
+      secs = seconds();
+      
+      if(secs - startSeconds > maxSeconds)
+      {
+        return true;
+      }
+      return false;
+    }
+  }
+}
+
 
