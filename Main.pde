@@ -16,7 +16,7 @@
   
   //Sonido
   Minim minim;
-  AudioPlayer DogCriyng;
+  AudioPlayer DogCrying;
   
   //Bombs
   Bombs bombs;
@@ -27,7 +27,7 @@
   //Limites
   
   int maxZ = 4000;
-  int minX = 1000;
+  int minZ = 1000;
   float maxX; 
   
   
