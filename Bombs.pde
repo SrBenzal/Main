@@ -1,6 +1,3 @@
-//FALTA HACER QUE NO SEA UN RECTANGULO, SI NO UN TRIANGULO
-
-
 class Bombs
 {
   int nBombs;
@@ -28,15 +25,41 @@ class Bombs
     
     float maxX;
     
-    for (int i=0; i < nBombs*2; i+=2)
+    int i = 0;
+    
+    while(i < nBombs * 2)
     {
         z = random(1000f, 5000f);
         
         maxX = (float)tan(radians(57)/2) * z;
         
-        bombVector[i] = random(-maxX,maxX);
-        bombVector[i+1] = z;
-
+        x = random(-maxX,maxX);
+        
+        int j = 0;
+        
+        boolean correctPos = true;
+        
+        while(j < i)
+        {
+          float dx = (float) x - bombVector[j];
+          float dz = (float) z - bombVector[j+1];
+          
+          float distance=sqrt(dx*dx+dz*dz);
+          
+          if(distance < alRange * 3)
+          {
+            correctPos = false;
+          }
+          
+          j += 2;
+        }
+        
+        if(correctPos)
+        {
+            bombVector[i] = x;
+            bombVector[i+1] = z;
+            i+= 2;
+        }
     }
   }
   
