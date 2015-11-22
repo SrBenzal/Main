@@ -17,6 +17,10 @@
   //Sonido
   Minim minim;
   AudioPlayer DogCrying;
+  AudioPlayer DogBarking;
+  AudioPlayer Beep;
+  AudioPlayer Victory;
+  AudioPlayer explosion;
   
   //Bombs
   Bombs bombs;
@@ -25,11 +29,11 @@
   StageViewer stageViewer;
   
   //Limites
-  
-  int maxZ = 4000;
+  int maxZ = stageWidth;
   int minZ = 1000;
   float maxX; 
   
+  Timer timer;
   
   void setup()
   {
@@ -42,12 +46,20 @@
     //Sonido
     minim = new Minim(this);
     DogCrying = minim.loadFile("Dob_Crying.mp3");
+    DogBarking = minim.loadFile("Dog_Barking.mp3");
+    Beep = minim.loadFile("Beep.mp3");
+    Victory = minim.loadFile("Victory.mp3");
+    explosion = minim.loadFile("explosion.mp3");
     
     //Bombs
     bombs = new Bombs(5, 200, 500);
     
     //StageViewer
     stageViewer = new StageViewer(bombs, stageWidth, stageDepth, screenWidth, screenHeight, true);
+    
+    //Timer
+    timer = new Timer(10);
+    timer.start();
   }
   
   void draw()
@@ -85,13 +97,23 @@
     
     maxX = tan(radians(57/2)) * closestValue - 200;
     
-    if(closestValue >= maxZ || closestValue <= minZ || realX > maxX || realX < - maxX)
+    if(closestValue >= maxZ || realX > maxX || realX < - maxX && closestValue > minZ)
     {
       
       if(!DogCrying.isPlaying()){
         
         DogCrying.play();
         DogCrying.rewind();
+      
+      }
+       
+    }
+    if(closestValue <= minZ)
+    {
+      
+      if(!Victory.isPlaying()){
+        
+        Victory.play();
       
       }
        
@@ -104,17 +126,46 @@
     if(bombs.checkBombsAlarm(realX, closestValue))
     {
        //println("WARNING!");
+      
+      if(!Beep.isPlaying()){
+        
+        Beep.play();
+        Beep.rewind();
+      
+      }
        
        if(bombs.checkBombsExplosion(realX, closestValue))
       {
         // println("BOOOM");
+        if(!explosion.isPlaying()){
+        
+        explosion.play();
+      
+        }
       }
     }
     else
     {
       //println("NO PROBLEM");
     }
-  }
+    
+   if( timer.isTimeOver())
+   {
+     print("TIEMPO ACABADO");
+   }
+  
+}
+
+void GameOver(boolean win){
+  
+  //true- win  false- bomb
+  
+  if(win){
+  
+    
+    }
+
+}
   
   
 

@@ -4,7 +4,9 @@ class Timer
   int secs;
   int maxSeconds;
   
-  
+
+  boolean stopped = true;
+
   Timer(int maxTime)
   {
       maxSeconds = maxTime;
@@ -12,7 +14,7 @@ class Timer
   
   void start()
   {
-     startSeconds = seconds();
+     startSeconds = second();
      stopped = false;
   }
   
@@ -21,18 +23,20 @@ class Timer
     stopped = true;
   }
   
-  bool isTimeOver()
+  boolean isTimeOver()
   {
     if(!stopped)
     {
-      secs = seconds();
+      secs = second();
       
+      print(secs - startSeconds + "\n");
       if(secs - startSeconds > maxSeconds)
       {
+        stopped = true;
         return true;
       }
-      return false;
     }
+    return false;
   }
 }
 
